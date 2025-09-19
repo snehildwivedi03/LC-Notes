@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Loader from "../components/Loader";
 import { toast } from "react-toastify";
 
@@ -93,9 +93,9 @@ const Register = () => {
           </form>
           <p className="mt-4 text-center text-gray-600 dark:text-gray-300">
             Already have an account?{" "}
-            <a href="/login" className="text-blue-600 hover:underline">
+            <Link to="/login" className="text-blue-600 hover:underline">
               Login
-            </a>
+            </Link>
           </p>
         </div>
       </div>

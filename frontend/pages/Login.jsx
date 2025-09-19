@@ -1,8 +1,9 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import Loader from "../components/Loader";
 import { toast } from "react-toastify";
+import API from "../services/api"; // <-- IMPORT your API service
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -11,9 +12,8 @@ const Login = () => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
+  const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,27 +21,25 @@ const Login = () => {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      // Use the pre-configured axios instance
+      const res = await API.post("/api/auth/login", formData);
 
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.message || "Login failed");
-
-      login(data);
+      // Axios puts the response data in `res.data`
+      login(res.data);
       toast.success("Login successful!");
       navigate("/dashboard");
     } catch (err) {
-      setError(err.message);
-      toast.error(err.message);
+      // Axios provides more detailed error messages
+      const message =
+        err.response?.data?.message || err.message || "Login failed";
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
   };
 
+  // ... the rest of your return JSX remains the same
   return (
     <>
       <Loader loading={loading} />
@@ -84,9 +82,9 @@ const Login = () => {
           </form>
           <p className="mt-4 text-center text-gray-600 dark:text-gray-300">
             Don’t have an account?{" "}
-            <a href="/register" className="text-blue-600 hover:underline">
+            <Link to="/register" className="text-blue-600 hover:underline">
               Register
-            </a>
+            </Link>
           </p>
         </div>
       </div>
