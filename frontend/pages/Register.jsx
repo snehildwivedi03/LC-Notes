@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 import { toast } from "react-toastify";
 
+const API = import.meta.env.VITE_API_URL;
+
 const Register = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -13,9 +15,8 @@ const Register = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
+  const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,14 +24,12 @@ const Register = () => {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/register", {
+      const res = await fetch(`${API}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.message || "Registration failed");
 
       toast.success("Registration successful! Please login.");
@@ -51,13 +50,11 @@ const Register = () => {
           <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white mb-6">
             Create an Account
           </h2>
-
           {error && (
             <p className="mb-4 text-sm text-red-600 bg-red-100 p-2 rounded">
               {error}
             </p>
           )}
-
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
               type="text"
@@ -68,7 +65,6 @@ const Register = () => {
               required
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none dark:bg-gray-800 dark:text-white"
             />
-
             <input
               type="email"
               name="email"
@@ -78,7 +74,6 @@ const Register = () => {
               required
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none dark:bg-gray-800 dark:text-white"
             />
-
             <input
               type="password"
               name="password"
@@ -88,7 +83,6 @@ const Register = () => {
               required
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none dark:bg-gray-800 dark:text-white"
             />
-
             <button
               type="submit"
               disabled={loading}
@@ -97,7 +91,6 @@ const Register = () => {
               {loading ? "Registering..." : "Register"}
             </button>
           </form>
-
           <p className="mt-4 text-center text-gray-600 dark:text-gray-300">
             Already have an account?{" "}
             <a href="/login" className="text-blue-600 hover:underline">

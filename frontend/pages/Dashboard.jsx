@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 import { toast } from "react-toastify";
 
+const API = import.meta.env.VITE_API_URL;
+
 const Dashboard = () => {
   const { isAuthenticated, user, logout } = useContext(AuthContext);
   const [notes, setNotes] = useState([]);
@@ -26,7 +28,7 @@ const Dashboard = () => {
       setLoading(true);
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5000/api/notes", {
+        const res = await axios.get(`${API}/api/notes`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setNotes(res.data);
@@ -46,11 +48,10 @@ const Dashboard = () => {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.post(
-        "http://localhost:5000/api/notes",
+        `${API}/api/notes`,
         { title, description },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
       setNotes([res.data, ...notes]);
       setShowModal(false);
       setTitle("");
@@ -68,7 +69,7 @@ const Dashboard = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:5000/api/notes/${id}`, {
+      await axios.delete(`${API}/api/notes/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setNotes(notes.filter((note) => note._id !== id));
@@ -94,11 +95,10 @@ const Dashboard = () => {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.put(
-        `http://localhost:5000/api/notes/${currentNoteId}`,
+        `${API}/api/notes/${currentNoteId}`,
         { title, description },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
       setNotes(
         notes.map((note) => (note._id === currentNoteId ? res.data : note))
       );
@@ -119,7 +119,6 @@ const Dashboard = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <Loader loading={loading} />
-
       <h1 className="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-white">
         Dashboard
       </h1>
